@@ -1,0 +1,91 @@
+# .NET Build Outputs
+bin/
+obj/
+out/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# MSBuild Binary and Structured Log
+*.binlog
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+*.sln.iml
+
+# Rider
+.idea/
+
+# MonoDevelop
+*.pidb
+*.pdb
+*.mdb
+
+# Unity (если будет использоваться для game dev)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Test Results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Operating System
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Log files
+*.log
+logs/
+
+# Cache files
+*.cache
+.sass-cache/
+
+# Image processing outputs (для нашего проекта)
+*_split_*/
+output/
+processed/
+temp_images/
+
+# Backup files
+*.bak
+*.backup
+*~
