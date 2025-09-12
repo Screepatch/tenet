@@ -70,7 +70,7 @@ namespace ImageSplitter
         /// </summary>
         static string GetImagePath()
         {
-            string path;
+            string? path;
             do
             {
                 Console.Write("Введите путь к графическому файлу: ");
@@ -112,9 +112,9 @@ namespace ImageSplitter
             do
             {
                 Console.Write(prompt);
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
                 
-                if (int.TryParse(input, out value) && value > 0)
+                if (!string.IsNullOrEmpty(input) && int.TryParse(input, out value) && value > 0)
                 {
                     return value;
                 }
@@ -128,8 +128,15 @@ namespace ImageSplitter
         /// </summary>
         static string CreateOutputDirectory(string imagePath)
         {
-            string directory = Path.GetDirectoryName(imagePath);
+            string? directory = Path.GetDirectoryName(imagePath);
             string fileName = Path.GetFileNameWithoutExtension(imagePath);
+            
+            // Если директория null, используем текущую папку
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Environment.CurrentDirectory;
+            }
+            
             string outputDir = Path.Combine(directory, $"{fileName}_split_{DateTime.Now:yyyyMMdd_HHmmss}");
             
             Directory.CreateDirectory(outputDir);
