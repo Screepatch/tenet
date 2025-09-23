@@ -1,4 +1,4 @@
-# ImageSplitter - Image Processing Program
+# ImageSplitter - Image Processing Program.
 
 A console C# application for splitting and merging image files with configurable rows and columns.
 
