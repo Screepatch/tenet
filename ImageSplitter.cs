@@ -12,7 +12,7 @@ namespace ImageSplitter
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("=== Программа работы с изображениями ===");
+            Console.WriteLine("=== Image Processing Program ===");
             Console.WriteLine();
 
             try
@@ -22,37 +22,37 @@ namespace ImageSplitter
                 
                 if (mode == 1)
                 {
-                    // Режим разделения изображения
+                    // Image splitting mode
                     SplitMode();
                 }
                 else
                 {
-                    // Режим соединения кадров
+                    // Frame merging mode
                     MergeMode();
                 }
             }
             catch (OutOfMemoryException)
             {
-                Console.WriteLine("Ошибка: Недостаточно памяти для обработки изображения или неверный формат файла!");
+                Console.WriteLine("Error: Insufficient memory to process the image or invalid file format!");
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("Ошибка: Нет доступа к файлу или папке!");
+                Console.WriteLine("Error: No access to file or folder!");
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine("Ошибка: Указанная папка не найдена!");
+                Console.WriteLine("Error: Specified folder not found!");
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Ошибка: Указанный файл не найден!");
+                Console.WriteLine("Error: Specified file not found!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                Console.WriteLine($"An error occurred: {ex.Message}");
             }
             
-            Console.WriteLine("\nНажмите любую клавишу для выхода...");
+            Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();
         }
 
@@ -61,15 +61,15 @@ namespace ImageSplitter
         /// </summary>
         static int GetWorkMode()
         {
-            Console.WriteLine("Выберите режим работы:");
-            Console.WriteLine("1 - Разделить изображение на кадры");
-            Console.WriteLine("2 - Соединить кадры в одно изображение");
+            Console.WriteLine("Choose operation mode:");
+            Console.WriteLine("1 - Split image into frames");
+            Console.WriteLine("2 - Merge frames into one image");
             Console.WriteLine();
             
             int mode;
             do
             {
-                Console.Write("Введите номер режима (1 или 2): ");
+                Console.Write("Enter mode number (1 or 2): ");
                 string? input = Console.ReadLine();
                 
                 if (!string.IsNullOrEmpty(input) && int.TryParse(input, out mode) && (mode == 1 || mode == 2))
@@ -77,7 +77,7 @@ namespace ImageSplitter
                     return mode;
                 }
                 
-                Console.WriteLine("Пожалуйста, введите 1 или 2!");
+                Console.WriteLine("Please enter 1 or 2!");
             } while (true);
         }
 
@@ -86,42 +86,42 @@ namespace ImageSplitter
         /// </summary>
         static void SplitMode()
         {
-            Console.WriteLine("\n=== Режим разделения изображения ===");
+            Console.WriteLine("\n=== Image Splitting Mode ===");
             
-            // Запрос пути к файлу
-            string imagePath = GetImagePath();
-            
-            // Проверка существования файла
-            if (!File.Exists(imagePath))
-            {
-                Console.WriteLine("Ошибка: Файл не найден!");
-                return;
-            }
+                // Request file path
+                string imagePath = GetImagePath();
+                
+                // Check file existence
+                if (!File.Exists(imagePath))
+                {
+                Console.WriteLine("Error: File not found!");
+                    return;
+                }
 
-            // Проверка формата файла
-            if (!IsValidImageFormat(imagePath))
-            {
-                Console.WriteLine("Ошибка: Неподдерживаемый формат файла! Поддерживаются: PNG, JPG, JPEG, BMP");
-                return;
-            }
+                // Check file format
+                if (!IsValidImageFormat(imagePath))
+                {
+                Console.WriteLine("Error: Unsupported file format! Supported formats: PNG, JPG, JPEG, BMP");
+                    return;
+                }
 
-            // Загрузка изображения
-            using (Image originalImage = Image.FromFile(imagePath))
-            {
-                Console.WriteLine($"Изображение загружено: {originalImage.Width}x{originalImage.Height} пикселей");
-                
-                // Запрос параметров разделения
-                int rows = GetPositiveInteger("Введите количество строк: ");
-                int columns = GetPositiveInteger("Введите количество столбцов: ");
-                
-                // Создание папки для результатов
-                string outputDirectory = CreateOutputDirectory(imagePath);
-                
-                // Разделение изображения
-                SplitImage(originalImage, rows, columns, outputDirectory);
-                
-                Console.WriteLine($"\nИзображение успешно разделено на {rows * columns} клеток!");
-                Console.WriteLine($"Результаты сохранены в папке: {outputDirectory}");
+                // Load image
+                using (Image originalImage = Image.FromFile(imagePath))
+                {
+                Console.WriteLine($"Image loaded: {originalImage.Width}x{originalImage.Height} pixels");
+                    
+                    // Request splitting parameters
+                int rows = GetPositiveInteger("Enter number of rows: ");
+                int columns = GetPositiveInteger("Enter number of columns: ");
+                    
+                    // Create output folder
+                    string outputDirectory = CreateOutputDirectory(imagePath);
+                    
+                    // Split image
+                    SplitImage(originalImage, rows, columns, outputDirectory);
+                    
+                Console.WriteLine($"\nImage successfully split into {rows * columns} cells!");
+                Console.WriteLine($"Results saved to folder: {outputDirectory}");
             }
         }
 
@@ -130,7 +130,7 @@ namespace ImageSplitter
         /// </summary>
         static void MergeMode()
         {
-            Console.WriteLine("\n=== Режим соединения кадров ===");
+            Console.WriteLine("\n=== Frame Merging Mode ===");
             
             // Запрос папки с кадрами
             string framesDirectory = GetFramesDirectory();
@@ -140,20 +140,20 @@ namespace ImageSplitter
             
             if (imageFiles.Length == 0)
             {
-                Console.WriteLine("Ошибка: В указанной папке не найдено изображений!");
+                Console.WriteLine("Error: No images found in the specified folder!");
                 return;
             }
             
-            Console.WriteLine($"Найдено {imageFiles.Length} изображений");
+            Console.WriteLine($"Found {imageFiles.Length} images");
             
             // Запрос параметров сетки
-            int rows = GetPositiveInteger("Введите количество строк: ");
-            int columns = GetPositiveInteger("Введите количество столбцов: ");
+            int rows = GetPositiveInteger("Enter number of rows: ");
+            int columns = GetPositiveInteger("Enter number of columns: ");
             
             if (rows * columns != imageFiles.Length)
             {
-                Console.WriteLine($"Предупреждение: Количество ячеек ({rows * columns}) не соответствует количеству изображений ({imageFiles.Length})");
-                Console.WriteLine($"Будут использованы первые {Math.Min(rows * columns, imageFiles.Length)} изображений");
+                Console.WriteLine($"Warning: Number of cells ({rows * columns}) does not match number of images ({imageFiles.Length})");
+                Console.WriteLine($"The first {Math.Min(rows * columns, imageFiles.Length)} images will be used");
             }
             
             // Запрос пути для сохранения результата
@@ -162,8 +162,8 @@ namespace ImageSplitter
             // Соединение кадров
             MergeImages(imageFiles, rows, columns, outputPath);
             
-            Console.WriteLine($"\nКадры успешно соединены!");
-            Console.WriteLine($"Результат сохранен: {outputPath}");
+            Console.WriteLine($"\nFrames successfully merged!");
+            Console.WriteLine($"Result saved: {outputPath}");
         }
 
         /// <summary>
@@ -174,12 +174,12 @@ namespace ImageSplitter
             string? path;
             do
             {
-                Console.Write("Введите путь к графическому файлу: ");
+                Console.Write("Enter path to image file: ");
                 path = Console.ReadLine()?.Trim();
                 
                 if (string.IsNullOrEmpty(path))
                 {
-                    Console.WriteLine("Путь не может быть пустым!");
+                    Console.WriteLine("Path cannot be empty!");
                     continue;
                 }
                 
@@ -220,7 +220,7 @@ namespace ImageSplitter
                     return value;
                 }
                 
-                Console.WriteLine("Пожалуйста, введите положительное целое число!");
+                Console.WriteLine("Please enter a positive integer!");
             } while (true);
         }
 
@@ -252,8 +252,8 @@ namespace ImageSplitter
             int cellWidth = originalImage.Width / columns;
             int cellHeight = originalImage.Height / rows;
             
-            Console.WriteLine($"\nРазмер каждой клетки: {cellWidth}x{cellHeight} пикселей");
-            Console.WriteLine("Обработка...");
+            Console.WriteLine($"\nSize of each cell: {cellWidth}x{cellHeight} pixels");
+            Console.WriteLine("Processing...");
             
             int cellNumber = 1;
             
@@ -291,13 +291,13 @@ namespace ImageSplitter
                         // Сохраняем клетку
                         cellBitmap.Save(filePath, ImageFormat.Png);
                         
-                        Console.Write($"\rОбработано клеток: {cellNumber}/{rows * columns}");
+                        Console.Write($"\rProcessed cells: {cellNumber}/{rows * columns}");
                         cellNumber++;
                     }
                 }
             }
             
-            Console.WriteLine(); // Новая строка после прогресса
+            Console.WriteLine(); // New line after progress
         }
 
         /// <summary>
@@ -308,12 +308,12 @@ namespace ImageSplitter
             string? path;
             do
             {
-                Console.Write("Введите путь к папке с кадрами: ");
+                Console.Write("Enter path to frames folder: ");
                 path = Console.ReadLine()?.Trim();
                 
                 if (string.IsNullOrEmpty(path))
                 {
-                    Console.WriteLine("Путь не может быть пустым!");
+                    Console.WriteLine("Path cannot be empty!");
                     continue;
                 }
                 
@@ -325,7 +325,7 @@ namespace ImageSplitter
                 
                 if (!Directory.Exists(path))
                 {
-                    Console.WriteLine("Папка не найдена!");
+                    Console.WriteLine("Folder not found!");
                     continue;
                 }
                 
@@ -360,12 +360,12 @@ namespace ImageSplitter
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine($"Ошибка: Нет доступа к папке {directory}");
+                Console.WriteLine($"Error: No access to folder {directory}");
                 return Array.Empty<string>();
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine($"Ошибка: Папка {directory} не найдена");
+                Console.WriteLine($"Error: Folder {directory} not found");
                 return Array.Empty<string>();
             }
             
@@ -382,12 +382,12 @@ namespace ImageSplitter
             string? path;
             do
             {
-                Console.Write("Введите путь для сохранения результата (с расширением .png): ");
+                Console.Write("Enter path to save result (with .png extension): ");
                 path = Console.ReadLine()?.Trim();
                 
                 if (string.IsNullOrEmpty(path))
                 {
-                    Console.WriteLine("Путь не может быть пустым!");
+                    Console.WriteLine("Path cannot be empty!");
                     continue;
                 }
                 
@@ -407,7 +407,7 @@ namespace ImageSplitter
                 string? directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
-                    Console.WriteLine("Папка не существует!");
+                    Console.WriteLine("Folder does not exist!");
                     continue;
                 }
                 
@@ -430,15 +430,15 @@ namespace ImageSplitter
                     {
                         // Проверяем формат пикселей на наличие альфа-канала
                         PixelFormat format = image.PixelFormat;
-                        if (format == PixelFormat.Format32bppArgb || 
+                        if (format == PixelFormat.Format32bppArgb ||
                             format == PixelFormat.Format32bppPArgb ||
                             format == PixelFormat.Format16bppArgb1555 ||
                             Image.IsAlphaPixelFormat(format))
                         {
-                            Console.WriteLine("Обнаружена прозрачность в изображениях - будет сохранена в результате");
+                            Console.WriteLine("Transparency detected in images - will be preserved in result");
                             return true;
                         }
-                        
+
                         // Дополнительная проверка для PNG файлов
                         if (Path.GetExtension(file).ToLowerInvariant() == ".png")
                         {
@@ -452,7 +452,7 @@ namespace ImageSplitter
                                         Color pixel = bitmap.GetPixel(x, y);
                                         if (pixel.A < 255)
                                         {
-                                            Console.WriteLine("Обнаружена прозрачность в изображениях - будет сохранена в результате");
+                                            Console.WriteLine("Transparency detected in images - will be preserved in result");
                                             return true;
                                         }
                                     }
@@ -483,145 +483,145 @@ namespace ImageSplitter
             try
             {
                 using (Image firstImage = Image.FromFile(imageFiles[0]))
-            {
-                int cellWidth = firstImage.Width;
-                int cellHeight = firstImage.Height;
-                
-                // Проверяем корректность размеров
-                if (cellWidth <= 0 || cellHeight <= 0)
                 {
-                    Console.WriteLine("Ошибка: Некорректные размеры первого изображения!");
-                    return;
-                }
-                
-                if (rows <= 0 || columns <= 0)
-                {
-                    Console.WriteLine("Ошибка: Некорректное количество строк или столбцов!");
-                    return;
-                }
-                
-                Console.WriteLine($"Размер каждой ячейки: {cellWidth}x{cellHeight} пикселей");
-                
-                // Создаем итоговое изображение
-                long totalWidthLong = (long)cellWidth * columns;
-                long totalHeightLong = (long)cellHeight * rows;
-                
-                // Проверяем на переполнение и разумные ограничения
-                if (totalWidthLong > int.MaxValue || totalHeightLong > int.MaxValue)
-                {
-                    Console.WriteLine("Ошибка: Размер итогового изображения слишком большой!");
-                    return;
-                }
-                
-                if (totalWidthLong > 32767 || totalHeightLong > 32767)
-                {
-                    Console.WriteLine("Предупреждение: Очень большое изображение может вызвать проблемы с памятью!");
-                }
-                
-                int totalWidth = (int)totalWidthLong;
-                int totalHeight = (int)totalHeightLong;
-                
-                Console.WriteLine($"Размер итогового изображения: {totalWidth}x{totalHeight} пикселей");
-                Console.WriteLine("Обработка...");
-                
-                // Определяем, нужна ли поддержка прозрачности
-                bool hasAlpha = CheckForAlphaChannel(imageFiles);
-                PixelFormat pixelFormat = hasAlpha ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
-                
-                using (Bitmap resultBitmap = new Bitmap(totalWidth, totalHeight, pixelFormat))
-                {
-                    using (Graphics graphics = Graphics.FromImage(resultBitmap))
+                    int cellWidth = firstImage.Width;
+                    int cellHeight = firstImage.Height;
+
+                        // Проверяем корректность размеров
+                    if (cellWidth <= 0 || cellHeight <= 0)
                     {
-                        // Настройка для правильной обработки альфа-канала
-                        if (hasAlpha)
+                        Console.WriteLine("Error: Invalid dimensions of the first image!");
+                        return;
+                    }
+
+                    if (rows <= 0 || columns <= 0)
+                    {
+                        Console.WriteLine("Error: Invalid number of rows or columns!");
+                        return;
+                    }
+
+                    Console.WriteLine($"Size of each cell: {cellWidth}x{cellHeight} pixels");
+
+                    // Создаем итоговое изображение
+                    long totalWidthLong = (long)cellWidth * columns;
+                    long totalHeightLong = (long)cellHeight * rows;
+
+                    // Проверяем на переполнение и разумные ограничения
+                    if (totalWidthLong > int.MaxValue || totalHeightLong > int.MaxValue)
+                    {
+                        Console.WriteLine("Error: Final image size is too large!");
+                        return;
+                    }
+
+                    if (totalWidthLong > 32767 || totalHeightLong > 32767)
+                    {
+                        Console.WriteLine("Warning: Very large image may cause memory issues!");
+                    }
+
+                    int totalWidth = (int)totalWidthLong;
+                    int totalHeight = (int)totalHeightLong;
+
+                    Console.WriteLine($"Final image size: {totalWidth}x{totalHeight} pixels");
+                    Console.WriteLine("Processing...");
+
+                    // Определяем, нужна ли поддержка прозрачности
+                    bool hasAlpha = CheckForAlphaChannel(imageFiles);
+                    PixelFormat pixelFormat = hasAlpha ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
+
+                    using (Bitmap resultBitmap = new Bitmap(totalWidth, totalHeight, pixelFormat))
+                    {
+                        using (Graphics graphics = Graphics.FromImage(resultBitmap))
                         {
-                            graphics.CompositingMode = CompositingMode.SourceOver;
-                            graphics.CompositingQuality = CompositingQuality.HighQuality;
-                        }
-                        
-                        // Если есть альфа-канал, заполняем прозрачным цветом, иначе белым
-                        graphics.Clear(hasAlpha ? Color.Transparent : Color.White);
-                        
-                        int imageIndex = 0;
-                        int totalCells = Math.Min(rows * columns, imageFiles.Length);
-                        
-                        for (int row = 0; row < rows && imageIndex < imageFiles.Length; row++)
-                        {
-                            for (int col = 0; col < columns && imageIndex < imageFiles.Length; col++)
+                            // Настройка для правильной обработки альфа-канала
+                            if (hasAlpha)
                             {
-                                string currentFile = imageFiles[imageIndex];
-                                try
+                                graphics.CompositingMode = CompositingMode.SourceOver;
+                                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                            }
+
+                            // Если есть альфа-канал, заполняем прозрачным цветом, иначе белым
+                            graphics.Clear(hasAlpha ? Color.Transparent : Color.White);
+
+                            int imageIndex = 0;
+                            int totalCells = Math.Min(rows * columns, imageFiles.Length);
+
+                            for (int row = 0; row < rows && imageIndex < imageFiles.Length; row++)
+                            {
+                                for (int col = 0; col < columns && imageIndex < imageFiles.Length; col++)
                                 {
-                                    using (Image cellImage = Image.FromFile(currentFile))
+                                    string currentFile = imageFiles[imageIndex];
+                                    try
                                     {
-                                        int x = col * cellWidth;
-                                        int y = row * cellHeight;
-                                        
-                                        // Рисуем изображение в соответствующей позиции
-                                        graphics.DrawImage(cellImage, x, y, cellWidth, cellHeight);
-                                        
-                                        Console.Write($"\rОбработано изображений: {imageIndex + 1}/{totalCells}");
+                                        using (Image cellImage = Image.FromFile(currentFile))
+                                        {
+                                            int x = col * cellWidth;
+                                            int y = row * cellHeight;
+
+                                            // Рисуем изображение в соответствующей позиции
+                                            graphics.DrawImage(cellImage, x, y, cellWidth, cellHeight);
+
+                                            Console.Write($"\rProcessed images: {imageIndex + 1}/{totalCells}");
+                                        }
                                     }
-                                }
-                                catch (OutOfMemoryException)
-                                {
-                                    Console.WriteLine($"\nОшибка: Недостаточно памяти для обработки файла {currentFile}");
-                                    // Рисуем пустую область вместо пропуска
-                                    using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                    catch (OutOfMemoryException)
                                     {
-                                        int x = col * cellWidth;
-                                        int y = row * cellHeight;
-                                        graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        Console.WriteLine($"\nError: Insufficient memory to process file {currentFile}");
+                                        // Рисуем пустую область вместо пропуска
+                                        using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                        {
+                                            int x = col * cellWidth;
+                                            int y = row * cellHeight;
+                                            graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        }
                                     }
-                                }
-                                catch (FileNotFoundException)
-                                {
-                                    Console.WriteLine($"\nОшибка: Файл {currentFile} не найден");
-                                    // Рисуем пустую область вместо пропуска
-                                    using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                    catch (FileNotFoundException)
                                     {
-                                        int x = col * cellWidth;
-                                        int y = row * cellHeight;
-                                        graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        Console.WriteLine($"\nError: File {currentFile} not found");
+                                        // Рисуем пустую область вместо пропуска
+                                        using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                        {
+                                            int x = col * cellWidth;
+                                            int y = row * cellHeight;
+                                            graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        }
                                     }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"\nОшибка при обработке файла {currentFile}: {ex.Message}");
-                                    // Рисуем пустую область вместо пропуска
-                                    using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                    catch (Exception ex)
                                     {
-                                        int x = col * cellWidth;
-                                        int y = row * cellHeight;
-                                        graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        Console.WriteLine($"\nError processing file {currentFile}: {ex.Message}");
+                                        // Рисуем пустую область вместо пропуска
+                                        using (Brush brush = new SolidBrush(hasAlpha ? Color.Transparent : Color.White))
+                                        {
+                                            int x = col * cellWidth;
+                                            int y = row * cellHeight;
+                                            graphics.FillRectangle(brush, x, y, cellWidth, cellHeight);
+                                        }
                                     }
-                                }
-                                finally
-                                {
-                                    imageIndex++;
+                                    finally
+                                    {
+                                        imageIndex++;
+                                    }
                                 }
                             }
+
+                            Console.WriteLine(); // New line after progress
                         }
-                        
-                        Console.WriteLine(); // Новая строка после прогресса
+
+                        // Сохраняем результат
+                        resultBitmap.Save(outputPath, ImageFormat.Png);
                     }
-                    
-                    // Сохраняем результат
-                    resultBitmap.Save(outputPath, ImageFormat.Png);
                 }
-            }
             }
             catch (OutOfMemoryException)
             {
-                Console.WriteLine("Ошибка: Недостаточно памяти для создания итогового изображения!");
+                Console.WriteLine("Error: Insufficient memory to create final image!");
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine($"Ошибка: Первый файл {imageFiles[0]} не найден!");
+                Console.WriteLine($"Error: First file {imageFiles[0]} not found!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при создании итогового изображения: {ex.Message}");
+                Console.WriteLine($"Error creating final image: {ex.Message}");
             }
         }
     }
