@@ -110,15 +110,27 @@ namespace ImageSplitter
                 {
                 Console.WriteLine($"Image loaded: {originalImage.Width}x{originalImage.Height} pixels");
                     
-                    // Request splitting parameters
+                // Request splitting parameters
                 int rows = GetPositiveInteger("Enter number of rows: ");
                 int columns = GetPositiveInteger("Enter number of columns: ");
-                    
-                    // Create output folder
-                    string outputDirectory = CreateOutputDirectory(imagePath);
-                    
-                    // Split image
-                    SplitImage(originalImage, rows, columns, outputDirectory);
+
+                // Ask if user wants to specify custom output path
+                Console.Write("Use custom output folder? (y/n, default: n): ");
+                string? useCustomPath = Console.ReadLine()?.Trim().ToLowerInvariant();
+                
+                string outputDirectory;
+                if (useCustomPath == "y" || useCustomPath == "yes")
+                {
+                    string customPath = GetOutputDirectory();
+                    outputDirectory = CreateOutputDirectory(imagePath, customPath);
+                }
+                else
+                {
+                    outputDirectory = CreateOutputDirectory(imagePath);
+                }
+
+                // Split image
+                SplitImage(originalImage, rows, columns, outputDirectory);
                     
                 Console.WriteLine($"\nImage successfully split into {rows * columns} cells!");
                 Console.WriteLine($"Results saved to folder: {outputDirectory}");
@@ -156,8 +168,26 @@ namespace ImageSplitter
                 Console.WriteLine($"The first {Math.Min(rows * columns, imageFiles.Length)} images will be used");
             }
             
-            // Запрос пути для сохранения результата
-            string outputPath = GetOutputPath();
+            // Ask if user wants to specify custom output folder
+            Console.Write("Use custom output folder? (y/n, default: n): ");
+            string? useCustomPath = Console.ReadLine()?.Trim().ToLowerInvariant();
+            
+            string outputPath;
+            if (useCustomPath == "y" || useCustomPath == "yes")
+            {
+                string customFolder = GetOutputDirectory();
+                Console.Write("Enter filename for merged image (without extension): ");
+                string? filename = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(filename))
+                {
+                    filename = $"merged_{DateTime.Now:yyyyMMdd_HHmmss}";
+                }
+                outputPath = Path.Combine(customFolder, filename + ".png");
+            }
+            else
+            {
+                outputPath = GetOutputPath();
+            }
             
             // Соединение кадров
             MergeImages(imageFiles, rows, columns, outputPath);
@@ -227,18 +257,23 @@ namespace ImageSplitter
         /// <summary>
         /// Создает папку для сохранения результатов
         /// </summary>
-        static string CreateOutputDirectory(string imagePath)
+        static string CreateOutputDirectory(string imagePath, string? customOutputPath = null)
         {
-            string? directory = Path.GetDirectoryName(imagePath);
             string fileName = Path.GetFileNameWithoutExtension(imagePath);
+            string baseDirectory;
             
-            // Если директория null, используем текущую папку
-            if (string.IsNullOrEmpty(directory))
+            // Используем пользовательский путь или путь к исходному файлу
+            if (!string.IsNullOrEmpty(customOutputPath))
             {
-                directory = Environment.CurrentDirectory;
+                baseDirectory = customOutputPath;
+            }
+            else
+            {
+                string? directory = Path.GetDirectoryName(imagePath);
+                baseDirectory = string.IsNullOrEmpty(directory) ? Environment.CurrentDirectory : directory;
             }
             
-            string outputDir = Path.Combine(directory, $"{fileName}_split_{DateTime.Now:yyyyMMdd_HHmmss}");
+            string outputDir = Path.Combine(baseDirectory, $"{fileName}_split_{DateTime.Now:yyyyMMdd_HHmmss}");
             
             Directory.CreateDirectory(outputDir);
             return outputDir;
@@ -372,6 +407,59 @@ namespace ImageSplitter
             // Сортируем файлы по имени для последовательного соединения
             imageFiles.Sort();
             return imageFiles.ToArray();
+        }
+
+        /// <summary>
+        /// Запрашивает у пользователя путь к папке для сохранения результатов
+        /// </summary>
+        static string GetOutputDirectory()
+        {
+            string? path;
+            do
+            {
+                Console.Write("Enter path to save results folder: ");
+                path = Console.ReadLine()?.Trim();
+                
+                if (string.IsNullOrEmpty(path))
+                {
+                    Console.WriteLine("Path cannot be empty!");
+                    continue;
+                }
+                
+                // Убираем кавычки, если они есть
+                if (path.StartsWith("\"") && path.EndsWith("\""))
+                {
+                    path = path.Substring(1, path.Length - 2);
+                }
+                
+                // Проверяем, что папка существует
+                if (!Directory.Exists(path))
+                {
+                    Console.Write($"Folder {path} does not exist. Create it? (y/n): ");
+                    string? response = Console.ReadLine()?.Trim().ToLowerInvariant();
+                    if (response == "y" || response == "yes")
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(path);
+                            Console.WriteLine($"Folder created: {path}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error creating folder: {ex.Message}");
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                
+                break;
+            } while (true);
+            
+            return path;
         }
 
         /// <summary>
