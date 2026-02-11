@@ -22,7 +22,7 @@ A console C# application for splitting and merging image files with configurable
 
 ## Installation
 
-1. Ensure you have .NET 6.0 or newer installed
+1. Ensure you have .NET 10.0 or newer installed
 2. Clone the repository or download the source code
 3. Open command prompt in the project folder
 4. Run the command:
@@ -40,6 +40,7 @@ A console C# application for splitting and merging image files with configurable
 2. Choose operation mode:
    - **Mode 1**: Split image into frames
    - **Mode 2**: Merge frames into one image
+   - **Mode 0**: Exit the program
 
 ### Mode 1: Image Splitting
 
@@ -55,8 +56,9 @@ A console C# application for splitting and merging image files with configurable
 Choose operation mode:
 1 - Split image into frames
 2 - Merge frames into one image
+0 - Exit
 
-Enter mode number (1 or 2): 1
+Enter mode number (0, 1 or 2): 1
 
 === Image Splitting Mode ===
 
@@ -103,8 +105,8 @@ Result saved: C:\images\merged.png
 
 ## Dependencies
 
-- .NET 6.0 or newer
-- System.Drawing.Common (automatically installed via NuGet)
+- .NET 10.0 or newer
+- System.Drawing.Common (included in the framework with `UseWindowsForms`)
 
 ## Output File Structure
 

@@ -85,6 +85,10 @@ output/
 processed/
 temp_images/
 
+# Claude Code
+.claude/
+CLAUDE.md
+
 # Backup files
 *.bak
 *.backup
